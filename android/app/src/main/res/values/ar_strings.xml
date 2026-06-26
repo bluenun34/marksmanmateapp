@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ar_scan_hint">Move slowly until tracking dots appear, then tap each edge through the centre.</string>
+    <string name="ar_tracking_ready">Tracking ready — tap the first edge of the target.</string>
+    <string name="ar_pin_second">First pin placed — tap the opposite edge through the centre.</string>
+    <string name="ar_confirm_or_reset">Diameter measured — confirm or reset pins.</string>
+    <string name="ar_reset_pins">Reset pins</string>
+    <string name="ar_use_diameter">Use measured diameter</string>
+    <string name="ar_diameter_readout">%.1f mm · %.3f in</string>
+    <string name="ar_installing_arcore">Installing ARCore… reopen AR ruler after install.</string>
+    <string name="ar_install_declined">ARCore install was declined.</string>
+    <string name="ar_unavailable">ARCore is not available on this device.</string>
+    <string name="ar_start_failed">Could not start AR.</string>
+    <string name="ar_camera_busy">Camera busy — close other camera apps and try again.</string>
+    <string name="ar_pin_failed">Could not place pin.</string>
+    <string name="ar_tap_miss">No surface at tap — move closer and point at the target face.</string>
+</resources>
