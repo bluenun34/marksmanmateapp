@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 480" role="img" aria-label="Sign in to MarksmanMate">
+  <rect width="260" height="480" rx="28" fill="#1a2332"/>
+  <rect x="12" y="12" width="236" height="456" rx="20" fill="#f4f6f9"/>
+  <rect x="90" y="24" width="80" height="8" rx="4" fill="#d8dee8"/>
+  <circle cx="130" cy="90" r="32" fill="#3d5a80"/>
+  <text x="130" y="98" text-anchor="middle" fill="#fff" font-family="Segoe UI,sans-serif" font-size="18" font-weight="700">MM</text>
+  <text x="130" y="140" text-anchor="middle" fill="#1a2332" font-family="Segoe UI,sans-serif" font-size="16" font-weight="600">MarksmanMate</text>
+  <text x="130" y="160" text-anchor="middle" fill="#5c6778" font-family="Segoe UI,sans-serif" font-size="10">Sign in to continue</text>
+  <rect x="32" y="190" width="196" height="44" rx="22" fill="#fff" stroke="#d8dee8" stroke-width="2"/>
+  <text x="130" y="217" text-anchor="middle" fill="#1a2332" font-family="Segoe UI,sans-serif" font-size="12">Sign in with Google</text>
+  <rect x="32" y="250" width="196" height="44" rx="8" fill="#fff" stroke="#d8dee8"/>
+  <text x="44" y="276" fill="#5c6778" font-family="Segoe UI,sans-serif" font-size="10">Email address</text>
+  <rect x="32" y="306" width="196" height="44" rx="8" fill="#fff" stroke="#d8dee8"/>
+  <text x="44" y="332" fill="#5c6778" font-family="Segoe UI,sans-serif" font-size="10">Password</text>
+  <rect x="32" y="368" width="196" height="44" rx="22" fill="#3d5a80"/>
+  <text x="130" y="395" text-anchor="middle" fill="#fff" font-family="Segoe UI,sans-serif" font-size="12" font-weight="600">Sign in</text>
+  <text x="130" y="440" text-anchor="middle" fill="#2d7a4f" font-family="Segoe UI,sans-serif" font-size="10" font-weight="600">Use your marksmanmate.com account</text>
+</svg>

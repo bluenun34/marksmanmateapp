@@ -5,7 +5,9 @@ import '../../core/config/app_config.dart';
 import '../../core/sync/sync_service.dart';
 import '../../core/sync/sync_status_provider.dart';
 import '../../core/theme/color_tokens.dart';
+import '../../features/auth/providers/auth_provider.dart';
 import '../../features/shoot_log/providers/shoot_log_provider.dart';
+import '../../shared/models/user_access.dart';
 
 /// Online/offline and sync controls shown inside the navigation drawer.
 class AppSyncPanel extends ConsumerWidget {
@@ -14,6 +16,21 @@ class AppSyncPanel extends ConsumerWidget {
   Future<void> _handleTap(WidgetRef ref, BuildContext context) async {
     final sync = ref.read(syncStatusProvider);
     if (sync.isSyncing) return;
+
+    final auth = ref.read(authStateProvider);
+    if (!auth.canUseApp) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            auth.showMobileSyncInactiveBanner
+                ? mobileSyncInactiveMessage
+                : 'Mobile sync requires a Pro subscription.',
+          ),
+        ),
+      );
+      return;
+    }
 
     final result =
         await ref.read(syncStatusProvider.notifier).syncAllDetailed();

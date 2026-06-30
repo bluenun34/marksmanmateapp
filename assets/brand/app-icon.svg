@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="512" height="512" role="img" aria-label="MarksmanMate">
+  <rect width="48" height="48" rx="11" fill="#3470b7" />
+  <circle cx="24" cy="24" r="20.0" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.42" />
+  <circle cx="24" cy="24" r="15.0" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.60" />
+  <circle cx="24" cy="24" r="10.0" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.80" />
+  <circle cx="24" cy="24" r="6.0" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.98" />
+  <circle cx="24" cy="24" r="3.2" fill="#eba012" />
+</svg>

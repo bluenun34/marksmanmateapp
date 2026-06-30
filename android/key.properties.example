@@ -1,0 +1,13 @@
+# Copy this file to key.properties and fill in your values.
+# NEVER commit key.properties or your .jks keystore to git.
+#
+# Create a keystore once (PowerShell):
+#   keytool -genkey -v -keystore keystore\upload-keystore.jks -keyalias upload -keyalg RSA -keysize 2048 -validity 10000
+#
+# Get SHA-1 for Google Sign-In (Google Cloud Console):
+#   keytool -list -v -keystore keystore\upload-keystore.jks -alias upload
+
+storePassword=YOUR_STORE_PASSWORD
+keyPassword=YOUR_KEY_PASSWORD
+keyAlias=upload
+storeFile=keystore/upload-keystore.jks

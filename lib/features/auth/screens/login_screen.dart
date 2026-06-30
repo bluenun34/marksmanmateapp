@@ -194,6 +194,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   icon: Icons.login_rounded,
                 ),
                 const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  onPressed: auth.isLoading
+                      ? null
+                      : () => ref
+                          .read(authStateProvider.notifier)
+                          .loginWithGoogle(),
+                  icon: const Icon(Icons.g_mobiledata_rounded),
+                  label: const Text('Sign in with Google'),
+                ),
+                const SizedBox(height: 12),
                 CheckboxListTile(
                   contentPadding: EdgeInsets.zero,
                   value: _rememberEmail,

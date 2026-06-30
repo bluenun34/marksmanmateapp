@@ -9,6 +9,7 @@ import '../../../core/sync/sync_status_provider.dart';
 import '../../../features/auth/providers/auth_provider.dart';
 import '../../../features/settings/providers/biometric_provider.dart';
 import '../../../features/settings/providers/theme_provider.dart';
+import '../../../features/settings/widgets/notification_preferences_section.dart';
 import '../../../shared/shoot_log/shoot_log_constants.dart';
 import '../../../shared/widgets/app_screen_app_bar.dart';
 
@@ -70,6 +71,25 @@ class SettingsScreen extends ConsumerWidget {
                     Uri.parse(AppConfig.profileUrl),
                     mode: LaunchMode.externalApplication,
                   ),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.refresh_rounded),
+                  title: const Text('Refresh profile'),
+                  subtitle: const Text(
+                    'Update plan and subscription status from the server',
+                  ),
+                  trailing: auth.isRefreshingProfile
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : null,
+                  onTap: auth.isRefreshingProfile
+                      ? null
+                      : () => ref
+                          .read(authStateProvider.notifier)
+                          .refreshProfile(),
                 ),
               ],
             ),
@@ -186,6 +206,8 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
           ),
+
+          const NotificationPreferencesSection(),
 
           // Security section
           Padding(

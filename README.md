@@ -133,4 +133,20 @@ lib/
   features/   # auth, dashboard, shoot_log, locker, settings
   shared/     # models and widgets
 config/       # dev.env.json, prod.env.json
+deploy/       # Play Store checklist, install guide, privacy pages
+scripts/      # Android signing and release build scripts
 ```
+
+## Android release (Google Play & sideload)
+
+See **`deploy/README.md`** and **`deploy/PLAY_STORE_CHECKLIST.md`** for the full process.
+
+```powershell
+# 1. One-time: create upload keystore and key.properties
+.\scripts\setup-android-signing.ps1
+
+# 2. Build AAB (Play Store) + APK (sideload)
+.\scripts\build-android-release.ps1
+```
+
+Deploy `deploy/website/` to marksmanmate.com and host the APK at `/downloads/marksmanmate-latest.apk`. The install guide lives at `/android-install/`.

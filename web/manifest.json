@@ -1,11 +1,11 @@
 {
-    "name": "marksmanmate",
-    "short_name": "marksmanmate",
+    "name": "MarksmanMate",
+    "short_name": "MarksmanMate",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#3470b7",
+    "theme_color": "#3470b7",
+    "description": "MarksmanMate mobile client for UK shooting sports.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

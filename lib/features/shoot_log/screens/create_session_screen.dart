@@ -7,10 +7,13 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/location/location_prefetch_provider.dart';
+import '../../../core/network/api_service.dart';
 import '../../../core/network/weather_service.dart';
 import '../../../core/preferences/app_preferences.dart';
 import '../../../core/sync/shoot_session_payload.dart';
 import '../../../core/sync/sync_service.dart';
+import '../../../features/auth/providers/auth_provider.dart';
+import '../../../features/events/providers/events_provider.dart';
 import '../../../features/locker/providers/locker_provider.dart';
 import '../../../shared/models/ammo_load_model.dart';
 import '../../../shared/models/firearm_model.dart';
@@ -33,6 +36,8 @@ class CreateSessionScreen extends ConsumerStatefulWidget {
     this.initialGroupSizeUnit,
     this.initialHits,
     this.initialTargetType,
+    this.initialDiscipline,
+    this.initialLocation,
   });
 
   final int? linkedEventId;
@@ -40,6 +45,8 @@ class CreateSessionScreen extends ConsumerStatefulWidget {
   final String? initialGroupSizeUnit;
   final int? initialHits;
   final String? initialTargetType;
+  final String? initialDiscipline;
+  final String? initialLocation;
 
   @override
   ConsumerState<CreateSessionScreen> createState() =>
@@ -76,6 +83,8 @@ class _CreateSessionScreenState extends ConsumerState<CreateSessionScreen> {
   int _currentStep = 0;
 
   DateTime _date = DateTime.now();
+  TimeOfDay _time = TimeOfDay.now();
+  String? _visibilityOverride;
   String _discipline = 'rifle';
   String _sessionType = 'practice';
   final _rangeCtrl = TextEditingController();
@@ -137,6 +146,14 @@ class _CreateSessionScreenState extends ConsumerState<CreateSessionScreen> {
         widget.initialTargetType!.trim().isNotEmpty) {
       _targetTypeCtrl.text = widget.initialTargetType!.trim();
     }
+    if (widget.initialDiscipline != null &&
+        ShootLogConstants.disciplines.containsKey(widget.initialDiscipline)) {
+      _discipline = widget.initialDiscipline!;
+    }
+    if (widget.initialLocation != null &&
+        widget.initialLocation!.trim().isNotEmpty) {
+      _locationCtrl.text = Uri.decodeComponent(widget.initialLocation!.trim());
+    }
     if (widget.initialGroupSize != null || widget.initialHits != null) {
       _currentStep = 3;
     }
@@ -154,6 +171,8 @@ class _CreateSessionScreenState extends ConsumerState<CreateSessionScreen> {
           ShootLogConstants.groupSizeUnits.contains(groupUnit)) {
         setState(() => _groupSizeUnit = groupUnit);
       }
+      await _prefillFromLinkedEvent();
+      if (!mounted) return;
 
       final handoffPhoto = TargetAnalyzerHandoff.takeTargetPhoto();
       if (handoffPhoto != null && mounted) {
@@ -168,6 +187,7 @@ class _CreateSessionScreenState extends ConsumerState<CreateSessionScreen> {
       }
       final locker = ref.read(lockerProvider);
       if (ref.read(isOnlineProvider) &&
+          ref.read(authStateProvider).canUseApp &&
           locker.firearms.isEmpty &&
           locker.ammoLoads.isEmpty &&
           !locker.isLoading) {
@@ -181,6 +201,57 @@ class _CreateSessionScreenState extends ConsumerState<CreateSessionScreen> {
         in ShootLogConstants.disciplineFields[_discipline] ?? const []) {
       _disciplineData[field.name] = '';
     }
+  }
+
+  DateTime get _occurredAt => DateTime(
+        _date.year,
+        _date.month,
+        _date.day,
+        _time.hour,
+        _time.minute,
+      );
+
+  Future<void> _prefillFromLinkedEvent() async {
+    final eventId = widget.linkedEventId;
+    if (eventId == null || !ref.read(isOnlineProvider)) return;
+    try {
+      final detail = await ref.read(apiServiceProvider).getEvent(eventId);
+      if (!mounted) return;
+      setState(() {
+        if (detail.discipline?.key != null &&
+            ShootLogConstants.disciplines.containsKey(detail.discipline!.key)) {
+          _discipline = detail.discipline!.key;
+        }
+        if (detail.location?.isNotEmpty == true &&
+            _locationCtrl.text.trim().isEmpty) {
+          _locationCtrl.text = detail.location!;
+        }
+        if (detail.club?.name != null && _rangeCtrl.text.trim().isEmpty) {
+          _rangeCtrl.text = detail.club!.name;
+        }
+        if (detail.eventDate != null) {
+          _date = detail.eventDate!;
+        }
+        if (detail.startTime != null) {
+          final parts = detail.startTime!.split(':');
+          if (parts.length >= 2) {
+            final h = int.tryParse(parts[0]);
+            final m = int.tryParse(parts[1]);
+            if (h != null && m != null) {
+              _time = TimeOfDay(hour: h, minute: m);
+            }
+          }
+        }
+      });
+    } catch (_) {}
+  }
+
+  Future<void> _pickTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _time,
+    );
+    if (picked != null) setState(() => _time = picked);
   }
 
   @override
@@ -639,7 +710,7 @@ class _CreateSessionScreenState extends ConsumerState<CreateSessionScreen> {
     try {
       final disciplineData = _buildDisciplineData();
       final companion = ShootSessionsCompanion.insert(
-        date: _date,
+        date: _occurredAt,
         discipline: _discipline,
         sessionType: _sessionType,
         eventId: Value(widget.linkedEventId),
@@ -695,7 +766,7 @@ class _CreateSessionScreenState extends ConsumerState<CreateSessionScreen> {
       );
 
       final payload = buildShootSessionPayload(
-        date: _date,
+        date: _occurredAt,
         discipline: _discipline,
         sessionType: _sessionType,
         rangeName:
@@ -745,6 +816,7 @@ class _CreateSessionScreenState extends ConsumerState<CreateSessionScreen> {
         groupSize: double.tryParse(_groupSizeCtrl.text),
         groupSizeUnit: _groupSizeUnit,
         eventId: widget.linkedEventId,
+        visibilityOverride: _visibilityOverride,
       );
 
       final outcome = await ref.read(shootLogProvider.notifier).createSession(
@@ -782,6 +854,9 @@ class _CreateSessionScreenState extends ConsumerState<CreateSessionScreen> {
 
       if (outcome.result != SessionSaveResult.failed &&
           outcome.result != SessionSaveResult.savedOfflinePhotosSkipped) {
+        if (widget.linkedEventId != null) {
+          ref.invalidate(structuredLogRemindersProvider);
+        }
         await _draftRepo.clearDraft();
         if (!mounted) return;
         context.go('/shoot-log');
@@ -941,6 +1016,21 @@ class _CreateSessionScreenState extends ConsumerState<CreateSessionScreen> {
                   ),
                   child: Text(
                     '${_date.day.toString().padLeft(2, '0')}/${_date.month.toString().padLeft(2, '0')}/${_date.year}',
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              InkWell(
+                onTap: _pickTime,
+                borderRadius: BorderRadius.circular(12),
+                child: InputDecorator(
+                  decoration: fieldDecoration(
+                    label: 'Time',
+                    requirement: FieldRequirement.optional,
+                    prefixIcon: Icons.schedule_outlined,
+                  ),
+                  child: Text(
+                    '${_time.hour.toString().padLeft(2, '0')}:${_time.minute.toString().padLeft(2, '0')}',
                   ),
                 ),
               ),
@@ -1571,6 +1661,38 @@ class _CreateSessionScreenState extends ConsumerState<CreateSessionScreen> {
             ),
           ),
         ],
+        const SizedBox(height: 12),
+        FormSectionCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const FormSectionHeader(
+                title: 'Visibility',
+                subtitle: 'Who can see this session on the website',
+                requirement: FieldRequirement.optional,
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<String?>(
+                initialValue: _visibilityOverride,
+                decoration: fieldDecoration(
+                  label: 'Override profile default',
+                  prefixIcon: Icons.visibility_outlined,
+                ),
+                items: const [
+                  DropdownMenuItem(value: null, child: Text('Use profile default')),
+                  DropdownMenuItem(value: 'public', child: Text('Public')),
+                  DropdownMenuItem(
+                    value: 'friends_club_members',
+                    child: Text('Friends & club members'),
+                  ),
+                  DropdownMenuItem(value: 'friends', child: Text('Friends only')),
+                  DropdownMenuItem(value: 'private', child: Text('Private')),
+                ],
+                onChanged: (v) => setState(() => _visibilityOverride = v),
+              ),
+            ],
+          ),
+        ),
         const SizedBox(height: 12),
         FormSectionCard(
           child: SessionPhotoPicker(

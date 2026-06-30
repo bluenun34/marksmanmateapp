@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/deep_links/deep_link_handler.dart';
 import 'core/notifications/local_notifications_service.dart';
+import 'core/notifications/notification_bootstrap.dart';
 import 'core/widgets/home_widget_service.dart';
 import 'core/sync/background_sync.dart';
 import 'core/sync/sync_on_reconnect.dart';
@@ -34,7 +35,7 @@ class MarksmanMateApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(syncOnReconnectProvider);
     final auth = ref.watch(authStateProvider);
-    if (auth.isAuthenticated) {
+    if (auth.canEnterApp) {
       ref.watch(shootLogProvider);
     }
     final router = ref.watch(routerProvider);
@@ -57,15 +58,18 @@ class MarksmanMateApp extends ConsumerWidget {
 
     return DeepLinkListener(
       router: router,
-      child: MaterialApp.router(
-        title: 'MarksmanMate',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.light(),
-        darkTheme: AppTheme.dark(),
-        themeMode: themeMode,
-        builder: (context, child) =>
-            AppSafeArea(child: child ?? const SizedBox.shrink()),
-        routerConfig: router,
+      child: NotificationBootstrap(
+        router: router,
+        child: MaterialApp.router(
+          title: 'MarksmanMate',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light(),
+          darkTheme: AppTheme.dark(),
+          themeMode: themeMode,
+          builder: (context, child) =>
+              AppSafeArea(child: child ?? const SizedBox.shrink()),
+          routerConfig: router,
+        ),
       ),
     );
   }

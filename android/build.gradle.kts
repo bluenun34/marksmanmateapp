@@ -5,6 +5,21 @@ allprojects {
     }
 }
 
+// Patch unmigrated plugins before Gradle configures Android library projects.
+val patchKotlinPlugins = rootProject.file("../tool/patch_kotlin_plugins.ps1")
+if (patchKotlinPlugins.exists()) {
+    providers.exec {
+        commandLine(
+            "powershell",
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            patchKotlinPlugins.absolutePath,
+        )
+    }.result.get()
+}
+
 val newBuildDir: Directory =
     rootProject.layout.buildDirectory
         .dir("../../build")

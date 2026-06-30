@@ -49,6 +49,8 @@ class SessionExportService {
   }
 
   static Future<void> share(ShootSession session) async {
-    await Share.share(buildText(session), subject: 'Shoot session');
+    await SharePlus.instance.share(
+      ShareParams(text: buildText(session), subject: 'Shoot session'),
+    );
   }
 }

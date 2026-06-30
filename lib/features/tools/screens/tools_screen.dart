@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/widgets/app_screen_app_bar.dart';
+import '../models/calculator_definitions.dart';
+import 'ballistics_calculator_screen.dart';
 
 class ToolsScreen extends StatelessWidget {
   const ToolsScreen({super.key});
@@ -21,6 +23,13 @@ class ToolsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
+          Text(
+            'At the range',
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
           _ToolCard(
             icon: Icons.timer_outlined,
             title: 'Shot timer',
@@ -57,6 +66,30 @@ class ToolsScreen extends StatelessWidget {
             subtitle: 'Minimal session entry — rounds, hits, discipline',
             onTap: () => context.push('/shoot-log/quick'),
           ),
+          const SizedBox(height: 24),
+          Text(
+            'Ballistics calculators',
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Same formulas as marksmanmate.com — works offline.',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 8),
+          for (final calc in ballisticsCalculators) ...[
+            _ToolCard(
+              icon: calculatorIcon(calc.icon),
+              title: calc.title,
+              subtitle: calc.subtitle,
+              onTap: () => context.push('/tools/calculators/${calc.id.name}'),
+            ),
+            const SizedBox(height: 12),
+          ],
         ],
       ),
     );

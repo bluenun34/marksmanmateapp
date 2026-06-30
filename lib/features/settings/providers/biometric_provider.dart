@@ -39,10 +39,7 @@ class BiometricLockNotifier extends Notifier<bool> {
     try {
       return await _auth.authenticate(
         localizedReason: reason,
-        options: const AuthenticationOptions(
-          stickyAuth: true,
-          biometricOnly: false,
-        ),
+        persistAcrossBackgrounding: true,
       );
     } catch (_) {
       return false;

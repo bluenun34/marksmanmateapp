@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:drift/drift.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/database/app_database.dart';
+import '../../../core/network/api_errors.dart';
 import '../../../core/network/api_service.dart';
+import '../../../shared/models/user_access.dart';
 import '../../../shared/models/ammo_load_model.dart';
 import '../../../shared/models/equipment_model.dart';
 import '../../../shared/models/firearm_model.dart';
@@ -160,9 +163,12 @@ class LockerNotifier extends Notifier<LockerState> {
       unawaited(_cacheData(firearms, ammo, equipment));
     } catch (e) {
       if (generation != _loadGeneration) return;
+      final message = e is DioException && e.response?.statusCode == 403
+          ? mobileSyncInactiveMessage
+          : 'Failed to sync locker: ${messageFromApiError(e)}';
       state = state.copyWith(
         isLoading: false,
-        error: 'Failed to sync locker: $e',
+        error: message,
       );
     }
   }

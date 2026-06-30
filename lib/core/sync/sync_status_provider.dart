@@ -4,6 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/notifications/local_notifications_service.dart';
+import '../../../core/notifications/notification_preference_catalog.dart';
+import '../../../shared/models/user_access.dart';
+import '../../features/settings/providers/notification_preferences_provider.dart';
 import 'last_sync_repository.dart';
 import 'sync_service.dart';
 import '../../features/locker/providers/locker_provider.dart';
@@ -90,6 +93,9 @@ String describeSyncError(Object error) {
     final message = error.response?.data;
     if (status == 401) {
       return 'Session expired — sign out and log in again';
+    }
+    if (status == 403) {
+      return mobileSyncInactiveMessage;
     }
     if (status != null) {
       return 'Server error ($status)';
@@ -183,11 +189,15 @@ class SyncStatusNotifier extends Notifier<SyncStatus> {
       }
 
       await recordSuccess();
-      unawaited(
-        LocalNotificationsService.instance.showSyncComplete(
-          sessionCount: sessionCount,
-        ),
-      );
+      if (ref
+          .read(notificationPreferencesProvider)
+          .isOn(NotificationPreferenceKey.syncAlerts)) {
+        unawaited(
+          LocalNotificationsService.instance.showSyncComplete(
+            sessionCount: sessionCount,
+          ),
+        );
+      }
       return SyncResult.success(sessionCount: sessionCount);
     } catch (error) {
       try {
@@ -201,7 +211,11 @@ class SyncStatusNotifier extends Notifier<SyncStatus> {
 
       final message = describeSyncError(error);
       state = state.copyWith(lastError: message);
-      unawaited(LocalNotificationsService.instance.showSyncFailed(message));
+      if (ref
+          .read(notificationPreferencesProvider)
+          .isOn(NotificationPreferenceKey.syncAlerts)) {
+        unawaited(LocalNotificationsService.instance.showSyncFailed(message));
+      }
       return SyncResult.failure(message);
     } finally {
       state = state.copyWith(isSyncing: false);

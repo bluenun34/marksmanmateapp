@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="MarksmanMate">
+  <style>
+    .bg { fill: #f8fafc; }
+    .ring { stroke: #3470b7; }
+    .dot { fill: #eba012; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #121820; }
+      .ring { stroke: #6199d7; }
+      .dot { fill: #f0b429; }
+    }
+  </style>
+  <rect width="48" height="48" rx="11" class="bg" />
+  <circle cx="24" cy="24" r="20.0" fill="none" stroke-width="1.6" class="ring" opacity="0.34" />
+    <circle cx="24" cy="24" r="15.0" fill="none" stroke-width="1.6" class="ring" opacity="0.52" />
+    <circle cx="24" cy="24" r="10.0" fill="none" stroke-width="1.6" class="ring" opacity="0.72" />
+    <circle cx="24" cy="24" r="6.0" fill="none" stroke-width="1.6" class="ring" opacity="0.90" />
+  <circle cx="24" cy="24" r="3.2" class="dot" />
+</svg>

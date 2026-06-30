@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 480" role="img" aria-label="Open the downloaded APK file">
+  <rect width="260" height="480" rx="28" fill="#1a2332"/>
+  <rect x="12" y="12" width="236" height="456" rx="20" fill="#f4f6f9"/>
+  <rect x="90" y="24" width="80" height="8" rx="4" fill="#d8dee8"/>
+  <rect x="16" y="48" width="228" height="64" rx="12" fill="#fff" stroke="#d8dee8"/>
+  <rect x="24" y="58" width="36" height="36" rx="8" fill="#3d5a80"/>
+  <text x="42" y="82" text-anchor="middle" fill="#fff" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700">�</text>
+  <text x="72" y="72" fill="#1a2332" font-family="Segoe UI,sans-serif" font-size="11" font-weight="600">Download complete</text>
+  <text x="72" y="88" fill="#5c6778" font-family="Segoe UI,sans-serif" font-size="9">marksmanmate-latest.apk</text>
+  <text x="72" y="102" fill="#3d5a80" font-family="Segoe UI,sans-serif" font-size="9" font-weight="600">Tap to open</text>
+  <path d="M130 130 L130 170" stroke="#c9922a" stroke-width="3"/>
+  <polygon points="130,178 124,168 136,168" fill="#c9922a"/>
+  <text x="130" y="200" text-anchor="middle" fill="#5c6778" font-family="Segoe UI,sans-serif" font-size="10">Or open Files � Downloads</text>
+  <rect x="40" y="220" width="180" height="56" rx="10" fill="#fff" stroke="#d8dee8"/>
+  <rect x="52" y="232" width="32" height="32" rx="6" fill="#3d5a80"/>
+  <text x="68" y="254" text-anchor="middle" fill="#fff" font-family="Segoe UI,sans-serif" font-size="10">MM</text>
+  <text x="96" y="246" fill="#1a2332" font-family="Segoe UI,sans-serif" font-size="10">marksmanmate-latest.apk</text>
+  <text x="96" y="262" fill="#5c6778" font-family="Segoe UI,sans-serif" font-size="8">12 MB � Just now</text>
+  <rect x="16" y="300" width="228" height="140" rx="12" fill="#e8f5ee" stroke="#2d7a4f"/>
+  <text x="130" y="330" text-anchor="middle" fill="#2d7a4f" font-family="Segoe UI,sans-serif" font-size="12" font-weight="600">Tap the file name</text>
+  <text x="130" y="355" text-anchor="middle" fill="#5c6778" font-family="Segoe UI,sans-serif" font-size="10">in the notification</text>
+  <text x="130" y="375" text-anchor="middle" fill="#5c6778" font-family="Segoe UI,sans-serif" font-size="10">or in your Downloads folder</text>
+</svg>

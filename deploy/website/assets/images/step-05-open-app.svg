@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 480" role="img" aria-label="Open MarksmanMate after installation">
+  <rect width="260" height="480" rx="28" fill="#1a2332"/>
+  <rect x="12" y="12" width="236" height="456" rx="20" fill="#f4f6f9"/>
+  <rect x="90" y="24" width="80" height="8" rx="4" fill="#d8dee8"/>
+  <text x="130" y="70" text-anchor="middle" fill="#1a2332" font-family="Segoe UI,sans-serif" font-size="13" font-weight="600">App installed</text>
+  <circle cx="130" cy="130" r="40" fill="#3d5a80"/>
+  <text x="130" y="140" text-anchor="middle" fill="#fff" font-family="Segoe UI,sans-serif" font-size="24" font-weight="700">MM</text>
+  <rect x="40" y="200" width="180" height="48" rx="24" fill="#3d5a80" stroke="#c9922a" stroke-width="3"/>
+  <text x="130" y="230" text-anchor="middle" fill="#fff" font-family="Segoe UI,sans-serif" font-size="14" font-weight="700">Open</text>
+  <text x="130" y="280" text-anchor="middle" fill="#5c6778" font-family="Segoe UI,sans-serif" font-size="10">Or find MarksmanMate on your home screen</text>
+  <rect x="30" y="320" width="50" height="50" rx="12" fill="#fff" stroke="#d8dee8"/>
+  <rect x="95" y="320" width="50" height="50" rx="12" fill="#fff" stroke="#d8dee8"/>
+  <rect x="160" y="320" width="50" height="50" rx="12" fill="#fff" stroke="#c9922a" stroke-width="2"/>
+  <rect x="168" y="328" width="34" height="34" rx="8" fill="#3d5a80"/>
+  <text x="185" y="350" text-anchor="middle" fill="#fff" font-family="Segoe UI,sans-serif" font-size="10">MM</text>
+  <text x="185" y="385" text-anchor="middle" fill="#2d7a4f" font-family="Segoe UI,sans-serif" font-size="9" font-weight="600">MarksmanMate</text>
+  <path d="M185 300 L185 318" stroke="#c9922a" stroke-width="2"/>
+  <polygon points="185,308 181,318 189,318" fill="#c9922a"/>
+</svg>

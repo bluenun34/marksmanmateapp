@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 480" role="img" aria-label="Download the MarksmanMate app on your phone">
+  <rect width="260" height="480" rx="28" fill="#1a2332"/>
+  <rect x="12" y="12" width="236" height="456" rx="20" fill="#f4f6f9"/>
+  <rect x="90" y="24" width="80" height="8" rx="4" fill="#d8dee8"/>
+  <rect x="16" y="48" width="228" height="36" rx="8" fill="#3d5a80"/>
+  <text x="130" y="71" text-anchor="middle" fill="#fff" font-family="Segoe UI,sans-serif" font-size="13" font-weight="600">Install MarksmanMate</text>
+  <rect x="24" y="100" width="212" height="120" rx="12" fill="#fff" stroke="#d8dee8"/>
+  <circle cx="130" cy="145" r="28" fill="#3d5a80"/>
+  <text x="130" y="152" text-anchor="middle" fill="#fff" font-family="Segoe UI,sans-serif" font-size="18" font-weight="700">MM</text>
+  <text x="130" y="195" text-anchor="middle" fill="#1a2332" font-family="Segoe UI,sans-serif" font-size="14" font-weight="600">MarksmanMate</text>
+  <text x="130" y="212" text-anchor="middle" fill="#5c6778" font-family="Segoe UI,sans-serif" font-size="10">Shooting sports companion</text>
+  <rect x="40" y="240" width="180" height="44" rx="22" fill="#3d5a80"/>
+  <text x="130" y="267" text-anchor="middle" fill="#fff" font-family="Segoe UI,sans-serif" font-size="13" font-weight="600">Download app</text>
+  <path d="M130 300 L130 340" stroke="#c9922a" stroke-width="3" marker-end="url(#arrow)"/>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#c9922a"/>
+    </marker>
+  </defs>
+  <rect x="24" y="350" width="212" height="56" rx="10" fill="#e8f5ee" stroke="#2d7a4f"/>
+  <text x="130" y="375" text-anchor="middle" fill="#2d7a4f" font-family="Segoe UI,sans-serif" font-size="11" font-weight="600">Tap the green button</text>
+  <text x="130" y="392" text-anchor="middle" fill="#2d7a4f" font-family="Segoe UI,sans-serif" font-size="10">marksmanmate-latest.apk</text>
+</svg>

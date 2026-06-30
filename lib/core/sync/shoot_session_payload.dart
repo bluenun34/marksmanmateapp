@@ -33,6 +33,7 @@ Map<String, dynamic> buildShootSessionPayload({
   double? groupSize,
   String? groupSizeUnit,
   int? eventId,
+  String? visibilityOverride,
 }) {
   final entry = <String, dynamic>{
     if (firearmId != null) 'firearm_id': firearmId,
@@ -88,6 +89,8 @@ Map<String, dynamic> buildShootSessionPayload({
     if (cleanedDisciplineData != null && cleanedDisciplineData.isNotEmpty)
       'discipline_data': cleanedDisciplineData,
     if (eventId != null) 'event_id': eventId,
+    if (visibilityOverride != null && visibilityOverride.isNotEmpty)
+      'visibility_override': visibilityOverride,
     if (entry.isNotEmpty) 'entries': [entry],
   };
 }
@@ -145,6 +148,7 @@ Map<String, dynamic> shootSessionToPayload({
   double? groupSize,
   String? groupSizeUnit,
   int? eventId,
+  String? visibilityOverride,
 }) =>
     buildShootSessionPayload(
       date: date,
@@ -178,6 +182,7 @@ Map<String, dynamic> shootSessionToPayload({
       groupSize: groupSize,
       groupSizeUnit: groupSizeUnit,
       eventId: eventId,
+      visibilityOverride: visibilityOverride,
     );
 
 ShootSessionModel remoteSessionFromJson(Map<String, dynamic> json) =>

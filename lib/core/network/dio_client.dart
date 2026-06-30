@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../config/app_config.dart';
@@ -8,8 +10,8 @@ final dioClientProvider = Provider<Dio>((ref) {
   return createApiClient(ref.read(tokenRepositoryProvider));
 });
 
-Dio createApiClient(TokenRepository tokenRepo) {
-  final dio = Dio(
+Dio _createBaseDio() {
+  return Dio(
     BaseOptions(
       baseUrl: AppConfig.apiBaseUrl,
       connectTimeout: const Duration(seconds: 15),
@@ -20,15 +22,23 @@ Dio createApiClient(TokenRepository tokenRepo) {
       },
     ),
   );
+}
 
-  dio.interceptors.add(_AuthInterceptor(dio, tokenRepo));
+Dio createApiClient(TokenRepository tokenRepo) {
+  final refreshDio = _createBaseDio();
+  final dio = _createBaseDio();
+  dio.interceptors.add(_AuthInterceptor(dio, refreshDio, tokenRepo));
   return dio;
 }
 
-class _AuthInterceptor extends QueuedInterceptor {
-  _AuthInterceptor(this._dio, this._tokenRepo);
+class _AuthInterceptor extends Interceptor {
+  _AuthInterceptor(this._dio, this._refreshDio, this._tokenRepo);
+
   final Dio _dio;
+  final Dio _refreshDio;
   final TokenRepository _tokenRepo;
+
+  Completer<void>? _refreshCompleter;
 
   @override
   Future<void> onRequest(
@@ -47,33 +57,64 @@ class _AuthInterceptor extends QueuedInterceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    if (err.response?.statusCode == 401) {
-      final refreshToken = await _tokenRepo.getRefreshToken();
-      if (refreshToken != null) {
-        try {
-          final resp = await _dio.post(
-            '/auth/refresh',
-            data: {'token': refreshToken},
-            options: Options(headers: {'Authorization': null}),
-          );
-          final newToken =
-              (resp.data['access_token'] ?? resp.data['token']) as String?;
-          final newRefresh = resp.data['refresh_token'] as String? ?? newToken;
-          if (newToken != null) {
-            await _tokenRepo.saveTokens(
-              accessToken: newToken,
-              refreshToken: newRefresh,
-            );
-            err.requestOptions.headers['Authorization'] = 'Bearer $newToken';
-            final retried = await _dio.fetch(err.requestOptions);
-            return handler.resolve(retried);
-          }
-        } catch (_) {
-          await _tokenRepo.clearTokens();
-          notifyAuthSessionExpired();
-        }
-      }
+    if (err.response?.statusCode != 401) {
+      return handler.next(err);
     }
-    handler.next(err);
+
+    final refreshToken = await _tokenRepo.getRefreshToken();
+    if (refreshToken == null) {
+      await _tokenRepo.clearTokens();
+      notifyAuthSessionExpired();
+      return handler.next(err);
+    }
+
+    try {
+      await _refreshAccessToken(refreshToken);
+      final accessToken = await _tokenRepo.getAccessToken();
+      if (accessToken == null) {
+        return handler.next(err);
+      }
+      err.requestOptions.headers['Authorization'] = 'Bearer $accessToken';
+      final retried = await _dio.fetch(err.requestOptions);
+      return handler.resolve(retried);
+    } catch (_) {
+      await _tokenRepo.clearTokens();
+      notifyAuthSessionExpired();
+      return handler.next(err);
+    }
+  }
+
+  Future<void> _refreshAccessToken(String refreshToken) async {
+    if (_refreshCompleter != null) {
+      return _refreshCompleter!.future;
+    }
+
+    final completer = Completer<void>();
+    _refreshCompleter = completer;
+
+    try {
+      final resp = await _refreshDio.post(
+        '/auth/refresh',
+        data: {'token': refreshToken},
+      );
+      final data = resp.data;
+      final payload = data is Map ? Map<String, dynamic>.from(data) : const {};
+      final newToken =
+          (payload['access_token'] ?? payload['token']) as String?;
+      final newRefresh = payload['refresh_token'] as String? ?? newToken;
+      if (newToken == null) {
+        throw StateError('Refresh response did not include a token');
+      }
+      await _tokenRepo.saveTokens(
+        accessToken: newToken,
+        refreshToken: newRefresh,
+      );
+      completer.complete();
+    } catch (error, stackTrace) {
+      completer.completeError(error, stackTrace);
+      rethrow;
+    } finally {
+      _refreshCompleter = null;
+    }
   }
 }

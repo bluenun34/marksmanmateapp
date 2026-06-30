@@ -88,23 +88,43 @@ class LockerScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-            Expanded(
-              child: locker.error != null
-            ? Center(
+            if (locker.error != null)
+              Material(
+                color: theme.colorScheme.errorContainer,
                 child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.error_outline_rounded,
-                          color: ColorTokens.danger, size: 40),
-                      const SizedBox(height: 12),
-                      Text(locker.error!, textAlign: TextAlign.center),
+                      Icon(
+                        Icons.error_outline_rounded,
+                        size: 18,
+                        color: theme.colorScheme.onErrorContainer,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          locker.error!,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onErrorContainer,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: locker.isLoading
+                            ? null
+                            : () => ref
+                                .read(lockerProvider.notifier)
+                                .refresh(),
+                        child: const Text('Retry'),
+                      ),
                     ],
                   ),
                 ),
-              )
-            : TabBarView(
+              ),
+            Expanded(
+              child: TabBarView(
                 children: [
                   // Firearms tab
                   locker.firearms.isEmpty
