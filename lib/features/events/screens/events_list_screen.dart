@@ -26,7 +26,7 @@ class _EventsListScreenState extends ConsumerState<EventsListScreen> {
     final eventsAsync = ref.watch(eventsListProvider(_filter));
 
     return Scaffold(
-      appBar: AppScreenAppBar.back(context, title: 'Events'),
+      appBar: AppScreenAppBar.main(context, title: 'Events'),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

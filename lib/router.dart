@@ -32,6 +32,7 @@ import 'features/notifications/screens/conversation_screen.dart';
 import 'features/notifications/screens/messages_list_screen.dart';
 import 'features/notifications/screens/notifications_screen.dart';
 import 'features/profile/screens/profile_screen.dart';
+import 'features/profile/screens/user_profile_screen.dart';
 import 'features/shoot_log/screens/personal_shoot_logs_screen.dart';
 import 'features/shoot_log/screens/shoot_log_analytics_screen.dart';
 import 'features/tools/screens/ballistics_calculator_screen.dart';
@@ -89,10 +90,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const ShootLogAnalyticsScreen(),
       ),
       GoRoute(
-        path: '/shoot-log/personal',
-        builder: (_, _) => const PersonalShootLogsScreen(),
-      ),
-      GoRoute(
         path: '/shoot-log/:id([0-9]+)/edit',
         builder: (_, state) => EditSessionScreen(
           localId: int.parse(state.pathParameters['id']!),
@@ -116,29 +113,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const RifleLevelScreen(),
       ),
       GoRoute(
-        path: '/clubs',
-        builder: (_, _) => const ClubsListScreen(),
-      ),
-      GoRoute(
         path: '/clubs/:slug',
         builder: (_, state) => ClubDetailScreen(
           slug: state.pathParameters['slug']!,
         ),
       ),
       GoRoute(
-        path: '/clubs/:slug/leagues/:leagueId',
-        builder: (_, state) => ClubLeagueScreen(
-          clubSlug: state.pathParameters['slug']!,
-          leagueId: int.parse(state.pathParameters['leagueId']!),
+        path: '/users/:id([0-9]+)',
+        builder: (_, state) => UserProfileScreen(
+          userId: int.parse(state.pathParameters['id']!),
         ),
-      ),
-      GoRoute(
-        path: '/friends',
-        builder: (_, _) => const FriendsListScreen(),
-      ),
-      GoRoute(
-        path: '/groups',
-        builder: (_, _) => const GroupsListScreen(),
       ),
       GoRoute(
         path: '/groups/new',
@@ -158,8 +142,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
-        path: '/events',
-        builder: (_, _) => const EventsListScreen(),
+        path: '/clubs/:slug/leagues/:leagueId',
+        builder: (_, state) => ClubLeagueScreen(
+          clubSlug: state.pathParameters['slug']!,
+          leagueId: int.parse(state.pathParameters['leagueId']!),
+        ),
       ),
       GoRoute(
         path: '/events/:id',
@@ -184,18 +171,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, state) => ShootLiveScreen(
           shootId: int.parse(state.pathParameters['id']!),
         ),
-      ),
-      GoRoute(
-        path: '/profile',
-        builder: (_, _) => const ProfileScreen(),
-      ),
-      GoRoute(
-        path: '/notifications',
-        builder: (_, _) => const NotificationsScreen(),
-      ),
-      GoRoute(
-        path: '/messages',
-        builder: (_, _) => const MessagesListScreen(),
       ),
       GoRoute(
         path: '/messages/:id',
@@ -281,6 +256,38 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/locker',
             builder: (_, _) => const LockerScreen(),
+          ),
+          GoRoute(
+            path: '/shoot-log/personal',
+            builder: (_, _) => const PersonalShootLogsScreen(),
+          ),
+          GoRoute(
+            path: '/notifications',
+            builder: (_, _) => const NotificationsScreen(),
+          ),
+          GoRoute(
+            path: '/messages',
+            builder: (_, _) => const MessagesListScreen(),
+          ),
+          GoRoute(
+            path: '/clubs',
+            builder: (_, _) => const ClubsListScreen(),
+          ),
+          GoRoute(
+            path: '/friends',
+            builder: (_, _) => const FriendsListScreen(),
+          ),
+          GoRoute(
+            path: '/groups',
+            builder: (_, _) => const GroupsListScreen(),
+          ),
+          GoRoute(
+            path: '/events',
+            builder: (_, _) => const EventsListScreen(),
+          ),
+          GoRoute(
+            path: '/profile',
+            builder: (_, _) => const ProfileScreen(),
           ),
           GoRoute(
             path: '/settings',

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/widgets/app_screen_app_bar.dart';
 import '../../../shared/widgets/error_retry_view.dart';
+import '../../../shared/widgets/user_profile_link.dart';
 import '../providers/clubs_provider.dart';
 
 class ClubLeagueScreen extends ConsumerStatefulWidget {
@@ -172,7 +173,10 @@ class _ClubLeagueScreenState extends ConsumerState<ClubLeagueScreen> {
                             leading: CircleAvatar(
                               child: Text('$place'),
                             ),
-                            title: Text(row.userName),
+                            title: UserProfileLink(
+                              userId: row.userId,
+                              name: row.userName,
+                            ),
                             subtitle: row.eventsEntered != null
                                 ? Text('${row.eventsEntered} events')
                                 : null,

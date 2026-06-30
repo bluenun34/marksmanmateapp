@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/auth/user_cache_repository.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/network/auth_session.dart';
 import '../../../core/network/api_errors.dart';
@@ -71,7 +72,28 @@ class AuthNotifier extends Notifier<AuthState> {
 
   ApiService get _api => ref.read(apiServiceProvider);
   TokenRepository get _tokenRepo => ref.read(tokenRepositoryProvider);
+  UserCacheRepository get _userCache => ref.read(userCacheRepositoryProvider);
   GoogleSignInService get _google => ref.read(googleSignInServiceProvider);
+
+  Future<void> _persistUser(UserModel user) async {
+    try {
+      await _userCache.save(user);
+    } catch (_) {}
+  }
+
+  Future<UserModel?> _restoreCachedUser() async {
+    try {
+      return await _userCache.load();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> _handleSessionInvalid() async {
+    await _tokenRepo.clearTokens();
+    await _userCache.clear();
+    state = const AuthState();
+  }
 
   Future<void> _completeTokenLogin(Map<String, dynamic> data) async {
     final token = data['access_token'] ?? data['token'];
@@ -86,6 +108,7 @@ class AuthNotifier extends Notifier<AuthState> {
 
     final user = await _api.getUser();
 
+    await _persistUser(user);
     state = state.copyWith(user: user, isLoading: false);
 
     if (state.canUseApp) {
@@ -123,10 +146,17 @@ class AuthNotifier extends Notifier<AuthState> {
           final user = await _api
               .getUser()
               .timeout(const Duration(seconds: 10));
+          await _persistUser(user);
           state = state.copyWith(user: user);
-        } catch (_) {
-          await _tokenRepo.clearTokens();
-          state = const AuthState();
+        } catch (e) {
+          if (isAuthApiError(e)) {
+            await _handleSessionInvalid();
+          } else {
+            final cached = await _restoreCachedUser();
+            if (cached != null) {
+              state = state.copyWith(user: cached);
+            }
+          }
         }
       }
     } catch (_) {
@@ -145,6 +175,7 @@ class AuthNotifier extends Notifier<AuthState> {
     state = state.copyWith(isRefreshingProfile: true, clearError: true);
     try {
       final user = await _api.getUser();
+      await _persistUser(user);
       state = state.copyWith(user: user, isRefreshingProfile: false);
 
       if (state.canUseApp) {
@@ -185,6 +216,7 @@ class AuthNotifier extends Notifier<AuthState> {
       await _google.signOut();
     } catch (_) {}
     await _tokenRepo.clearTokens();
+    await _userCache.clear();
     ref.read(syncStatusProvider.notifier).reset();
     state = const AuthState();
   }

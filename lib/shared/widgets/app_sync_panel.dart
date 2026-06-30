@@ -95,7 +95,7 @@ class AppSyncPanel extends ConsumerWidget {
                 : '${sessions.length} session${sessions.length == 1 ? '' : 's'} · ${formatLastSync(syncStatus.lastSyncedAt!)}';
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       child: Material(
         color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
@@ -140,7 +140,10 @@ class AppSyncPanel extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           Text(
                             statusLabel,
@@ -149,20 +152,16 @@ class AppSyncPanel extends ConsumerWidget {
                               color: statusColor,
                             ),
                           ),
-                          if (pending > 0) ...[
-                            const SizedBox(width: 8),
+                          if (pending > 0)
                             _Chip(
                               label: '$pending pending',
                               color: ColorTokens.accentBrass,
                             ),
-                          ],
-                          if (errors > 0) ...[
-                            const SizedBox(width: 8),
+                          if (errors > 0)
                             _Chip(
                               label: '$errors failed',
                               color: ColorTokens.danger,
                             ),
-                          ],
                         ],
                       ),
                       const SizedBox(height: 4),

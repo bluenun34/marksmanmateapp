@@ -27,7 +27,7 @@ class MessagesListScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      appBar: AppScreenAppBar.back(context, title: 'Messages'),
+      appBar: AppScreenAppBar.main(context, title: 'Messages'),
       body: unavailableMessage != null
           ? InboxUnavailableView(message: unavailableMessage)
           : conversationsAsync.when(

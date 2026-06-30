@@ -10,6 +10,7 @@ import 'app_screen_app_bar.dart';
 import 'app_sync_panel.dart';
 import 'connectivity_banner.dart';
 import 'mobile_sync_inactive_banner.dart';
+import 'user_avatar.dart';
 
 class MainShell extends ConsumerStatefulWidget {
   const MainShell({
@@ -26,12 +27,21 @@ class MainShell extends ConsumerStatefulWidget {
 }
 
 class _MainShellState extends ConsumerState<MainShell> {
-  static const _navItems = [
+  static const _mainNavItems = [
     ('/dashboard', Icons.home_outlined, Icons.home_rounded, 'Home'),
     ('/shoot-log', Icons.track_changes_outlined, Icons.track_changes, 'Shoot log'),
     ('/tools', Icons.build_outlined, Icons.build_rounded, 'Range tools'),
     ('/locker', Icons.lock_outline_rounded, Icons.lock_rounded, 'Locker'),
     ('/settings', Icons.settings_outlined, Icons.settings_rounded, 'Settings'),
+  ];
+
+  static const _communityNavItems = [
+    ('/notifications', Icons.notifications_outlined, Icons.notifications, 'Notifications'),
+    ('/messages', Icons.chat_bubble_outline, Icons.chat_bubble, 'Messages'),
+    ('/events', Icons.event_outlined, Icons.event, 'Events'),
+    ('/clubs', Icons.groups_outlined, Icons.groups, 'My clubs'),
+    ('/groups', Icons.group_work_outlined, Icons.group_work, 'My groups'),
+    ('/friends', Icons.person_outline, Icons.person, 'Friends'),
   ];
 
   static const _quickActions = [
@@ -59,12 +69,19 @@ class _MainShellState extends ConsumerState<MainShell> {
     return _quickActions.any((action) => loc.startsWith(action.$1));
   }
 
-  bool _isNavSelected(String path) {
+  bool _isMainNavSelected(String path) {
     if (_isQuickActionRoute()) return false;
     if (path == '/shoot-log') {
       return widget.location == '/shoot-log';
     }
-    return widget.location.startsWith(path);
+    if (path == '/tools') {
+      return widget.location == '/tools';
+    }
+    return widget.location == path || widget.location.startsWith('$path/');
+  }
+
+  bool _isCommunityNavSelected(String path) {
+    return widget.location == path || widget.location.startsWith('$path/');
   }
 
   int? _quickActionIndex() {
@@ -101,115 +118,40 @@ class _MainShellState extends ConsumerState<MainShell> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                DrawerHeader(
-                  margin: EdgeInsets.zero,
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primaryContainer,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.my_location_rounded,
-                        size: 36,
-                        color: theme.colorScheme.primary,
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'MarksmanMate',
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      if (auth.user?.name != null) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          auth.user!.name,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
+                _DrawerProfileHeader(
+                  name: auth.user?.name,
+                  email: auth.user?.email,
+                  avatarUrl: auth.user?.avatarUrl,
+                  onTap: () => _go('/profile'),
                 ),
                 const AppSyncPanel(),
                 const Divider(height: 1),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-                  child: Text(
-                    'Navigate',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                for (final item in _navItems)
-                  ListTile(
-                    leading: Icon(
-                      _isNavSelected(item.$1) ? item.$3 : item.$2,
-                    ),
-                    title: Text(item.$4),
-                    selected: _isNavSelected(item.$1),
+                const _DrawerSectionLabel('Main'),
+                for (final item in _mainNavItems) ...[
+                  _DrawerNavTile(
+                    label: item.$4,
+                    icon: item.$2,
+                    selectedIcon: item.$3,
+                    selected: _isMainNavSelected(item.$1),
                     onTap: () => _go(item.$1),
                   ),
-                const Divider(height: 1),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-                  child: Text(
-                    'Activity',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w600,
+                  if (item.$1 == '/shoot-log')
+                    _PersonalShootLogsDrawerTile(
+                      selected: widget.location == '/shoot-log/personal',
+                      onTap: () => _go('/shoot-log/personal'),
                     ),
+                ],
+                const Divider(height: 1),
+                const _DrawerSectionLabel('Community'),
+                for (final item in _communityNavItems)
+                  _DrawerNavTile(
+                    label: item.$4,
+                    icon: item.$2,
+                    selectedIcon: item.$3,
+                    selected: _isCommunityNavSelected(item.$1),
+                    onTap: () => _go(item.$1),
+                    badgeCount: item.$1 == '/notifications' ? badgeCount : null,
                   ),
-                ),
-                ListTile(
-                  leading: Badge(
-                    isLabelVisible: badgeCount > 0,
-                    label: Text('$badgeCount'),
-                    child: const Icon(Icons.notifications_outlined),
-                  ),
-                  title: const Text('Notifications'),
-                  selected: widget.location.startsWith('/notifications'),
-                  onTap: () => _go('/notifications'),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.chat_bubble_outline),
-                  title: const Text('Messages'),
-                  selected: widget.location.startsWith('/messages'),
-                  onTap: () => _go('/messages'),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.groups_outlined),
-                  title: const Text('My clubs'),
-                  selected: widget.location.startsWith('/clubs'),
-                  onTap: () => _go('/clubs'),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.group_work_outlined),
-                  title: const Text('My groups'),
-                  selected: widget.location.startsWith('/groups'),
-                  onTap: () => _go('/groups'),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.person_outline),
-                  title: const Text('Friends'),
-                  selected: widget.location.startsWith('/friends'),
-                  onTap: () => _go('/friends'),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.event_outlined),
-                  title: const Text('Events'),
-                  selected: widget.location.startsWith('/events'),
-                  onTap: () => _go('/events'),
-                ),
-                _PersonalShootLogsDrawerTile(
-                  selected: widget.location == '/shoot-log/personal',
-                  onTap: () => _go('/shoot-log/personal'),
-                ),
               ],
             ),
           ),
@@ -249,6 +191,167 @@ class _MainShellState extends ConsumerState<MainShell> {
   }
 }
 
+class _DrawerProfileHeader extends StatelessWidget {
+  const _DrawerProfileHeader({
+    required this.name,
+    required this.email,
+    required this.avatarUrl,
+    required this.onTap,
+  });
+
+  final String? name;
+  final String? email;
+  final String? avatarUrl;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Material(
+      color: theme.colorScheme.primaryContainer,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 12, 16),
+          child: Row(
+            children: [
+              UserAvatar(
+                name: name,
+                avatarUrl: avatarUrl,
+                radius: 24,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name ?? 'MarksmanMate',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    if (email != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        email!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 4),
+                    Text(
+                      'View profile',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DrawerSectionLabel extends StatelessWidget {
+  const _DrawerSectionLabel(this.label);
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 14, 20, 6),
+      child: Text(
+        label,
+        style: theme.textTheme.labelMedium?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.4,
+        ),
+      ),
+    );
+  }
+}
+
+class _DrawerNavTile extends StatelessWidget {
+  const _DrawerNavTile({
+    required this.label,
+    required this.icon,
+    required this.selectedIcon,
+    required this.selected,
+    required this.onTap,
+    this.badgeCount,
+    this.dense = false,
+  });
+
+  final String label;
+  final IconData icon;
+  final IconData selectedIcon;
+  final bool selected;
+  final VoidCallback onTap;
+  final int? badgeCount;
+  final bool dense;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final iconColor = selected
+        ? theme.colorScheme.primary
+        : theme.colorScheme.onSurfaceVariant;
+
+    Widget leading = Icon(selected ? selectedIcon : icon, color: iconColor);
+    if (badgeCount != null && badgeCount! > 0) {
+      leading = Badge(
+        isLabelVisible: true,
+        label: Text('$badgeCount'),
+        child: leading,
+      );
+    }
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(12, dense ? 0 : 1, 12, dense ? 0 : 1),
+      child: ListTile(
+        dense: dense,
+        visualDensity: dense ? VisualDensity.compact : VisualDensity.standard,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: dense ? 20 : 12,
+          vertical: dense ? 0 : 4,
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        selected: selected,
+        selectedTileColor: theme.colorScheme.primaryContainer.withAlpha(120),
+        leading: leading,
+        title: Text(
+          label,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+            color: selected ? theme.colorScheme.primary : null,
+          ),
+        ),
+        onTap: onTap,
+      ),
+    );
+  }
+}
+
 class _PersonalShootLogsDrawerTile extends ConsumerWidget {
   const _PersonalShootLogsDrawerTile({
     required this.selected,
@@ -265,15 +368,14 @@ class _PersonalShootLogsDrawerTile extends ConsumerWidget {
           orElse: () => 0,
         );
 
-    return ListTile(
-      leading: Badge(
-        isLabelVisible: count > 0,
-        label: Text('$count'),
-        child: const Icon(Icons.assignment_outlined),
-      ),
-      title: const Text('Personal shoot logs'),
+    return _DrawerNavTile(
+      label: 'Personal reminders',
+      icon: Icons.assignment_outlined,
+      selectedIcon: Icons.assignment,
       selected: selected,
       onTap: onTap,
+      dense: true,
+      badgeCount: count > 0 ? count : null,
     );
   }
 }

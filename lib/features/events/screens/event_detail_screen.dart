@@ -8,6 +8,7 @@ import '../../../features/auth/providers/auth_provider.dart';
 import '../../../shared/models/event_model.dart';
 import '../../../shared/widgets/app_screen_app_bar.dart';
 import '../../../shared/widgets/error_retry_view.dart';
+import '../../../shared/widgets/user_profile_link.dart';
 import '../providers/events_provider.dart';
 import '../widgets/event_status_chip.dart';
 
@@ -389,7 +390,10 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                   const SizedBox(height: 8),
                   for (final score in detail.scores)
                     ListTile(
-                      title: Text(score.name ?? 'Shooter ${score.userId}'),
+                      title: UserProfileLink(
+                        userId: score.userId,
+                        name: score.name ?? 'Shooter ${score.userId}',
+                      ),
                       subtitle: score.division != null
                           ? Text('Division: ${score.division}')
                           : null,

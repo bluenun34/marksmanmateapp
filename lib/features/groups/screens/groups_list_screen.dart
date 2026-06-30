@@ -24,7 +24,7 @@ class GroupsListScreen extends ConsumerWidget {
     final invitesAsync = ref.watch(groupInvitesProvider);
 
     return Scaffold(
-      appBar: AppScreenAppBar.back(
+      appBar: AppScreenAppBar.main(
         context,
         title: 'My groups',
         actions: [

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../config/app_config.dart';
+import 'api_errors.dart';
 import 'auth_session.dart';
 import 'token_repository.dart';
 
@@ -77,9 +78,11 @@ class _AuthInterceptor extends Interceptor {
       err.requestOptions.headers['Authorization'] = 'Bearer $accessToken';
       final retried = await _dio.fetch(err.requestOptions);
       return handler.resolve(retried);
-    } catch (_) {
-      await _tokenRepo.clearTokens();
-      notifyAuthSessionExpired();
+    } catch (e) {
+      if (isRefreshRejected(e)) {
+        await _tokenRepo.clearTokens();
+        notifyAuthSessionExpired();
+      }
       return handler.next(err);
     }
   }

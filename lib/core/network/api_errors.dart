@@ -1,4 +1,42 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
+
+/// True when the request failed because of connectivity or timeouts.
+bool isTransientApiError(Object error) {
+  if (error is TimeoutException) return true;
+  if (error is! DioException) return false;
+
+  final status = error.response?.statusCode;
+  if (status == 401 || status == 403 || status == 422) return false;
+
+  switch (error.type) {
+    case DioExceptionType.connectionTimeout:
+    case DioExceptionType.sendTimeout:
+    case DioExceptionType.receiveTimeout:
+    case DioExceptionType.connectionError:
+      return true;
+    default:
+      return error.response == null;
+  }
+}
+
+/// True when the server rejected credentials.
+bool isAuthApiError(Object error) {
+  if (error is DioException && error.response?.statusCode == 401) {
+    return true;
+  }
+  return false;
+}
+
+/// True when a token refresh response means the session is no longer valid.
+bool isRefreshRejected(Object error) {
+  if (error is StateError) return true;
+  if (error is! DioException) return false;
+
+  final status = error.response?.statusCode;
+  return status == 401 || status == 403 || status == 422;
+}
 
 String messageFromDioException(DioException error) {
   final data = error.response?.data;

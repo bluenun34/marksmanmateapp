@@ -8,7 +8,7 @@ import '../../../shared/models/group_models.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/error_retry_view.dart';
 import '../../../shared/widgets/user_avatar.dart';
-import '../providers/groups_provider.dart';
+import '../../../shared/widgets/user_profile_link.dart';
 import '../providers/groups_provider.dart';
 import '../widgets/group_ui_helpers.dart';
 
@@ -410,8 +410,9 @@ class _MemberAdminCardState extends ConsumerState<_MemberAdminCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        member.name,
+                      UserProfileLink(
+                        userId: member.userId,
+                        name: member.name,
                         style: theme.textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),

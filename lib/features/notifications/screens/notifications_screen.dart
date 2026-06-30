@@ -37,7 +37,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     );
 
     return Scaffold(
-      appBar: AppScreenAppBar.back(
+      appBar: AppScreenAppBar.main(
         context,
         title: 'Notifications',
         actions: [

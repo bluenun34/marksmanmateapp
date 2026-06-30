@@ -6,6 +6,7 @@ import '../../../shared/widgets/app_screen_app_bar.dart';
 import '../../../shared/widgets/conversation_avatar.dart';
 import '../../../shared/widgets/error_retry_view.dart';
 import '../../../shared/widgets/user_avatar.dart';
+import '../../../shared/widgets/user_profile_link.dart';
 import '../providers/notifications_provider.dart';
 
 class ConversationScreen extends ConsumerStatefulWidget {
@@ -140,10 +141,12 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   if (!isMine && message.userName != null)
-                                    Text(
-                                      message.userName!,
-                                      style:
-                                          Theme.of(context).textTheme.labelSmall,
+                                    UserProfileLink(
+                                      userId: message.userId,
+                                      name: message.userName!,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelSmall,
                                     ),
                                   Text(message.body),
                                   if (message.createdAt != null)

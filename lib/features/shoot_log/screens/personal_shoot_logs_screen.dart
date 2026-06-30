@@ -15,7 +15,7 @@ class PersonalShootLogsScreen extends ConsumerWidget {
     final remindersAsync = ref.watch(structuredLogRemindersProvider);
 
     return Scaffold(
-      appBar: AppScreenAppBar.back(context, title: 'Personal shoot logs'),
+      appBar: AppScreenAppBar.main(context, title: 'Personal shoot logs'),
       body: remindersAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => ErrorRetryView(

@@ -21,7 +21,7 @@ class ClubsListScreen extends ConsumerWidget {
     final clubsAsync = ref.watch(myClubsProvider);
 
     return Scaffold(
-      appBar: AppScreenAppBar.back(context, title: 'My clubs'),
+      appBar: AppScreenAppBar.main(context, title: 'My clubs'),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

@@ -7,6 +7,7 @@ import '../../../shared/models/friendship_models.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_screen_app_bar.dart';
 import '../../../shared/widgets/error_retry_view.dart';
+import '../../../shared/widgets/user_profile_link.dart';
 import '../providers/friends_provider.dart';
 
 class FriendsListScreen extends ConsumerStatefulWidget {
@@ -47,7 +48,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
         : null;
 
     return Scaffold(
-      appBar: AppScreenAppBar.back(context, title: 'Friends'),
+      appBar: AppScreenAppBar.main(context, title: 'Friends'),
       body: Column(
         children: [
           if (!isOnline)
@@ -234,7 +235,10 @@ class _SentRequestCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AppCard(
       child: ListTile(
-        title: Text(friendship.userName),
+        title: UserProfileLink(
+          userId: friendship.userId,
+          name: friendship.userName,
+        ),
         subtitle: const Text('Request pending'),
         trailing: OutlinedButton(
           onPressed: () async {
@@ -264,7 +268,12 @@ class _RequestCard extends ConsumerWidget {
         padding: const EdgeInsets.all(14),
         child: Row(
           children: [
-            Expanded(child: Text(friendship.userName)),
+            Expanded(
+              child: UserProfileLink(
+                userId: friendship.userId,
+                name: friendship.userName,
+              ),
+            ),
             FilledButton(
               onPressed: () async {
                 await ref
@@ -304,7 +313,10 @@ class _FriendCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AppCard(
       child: ListTile(
-        title: Text(friendship.userName),
+        title: UserProfileLink(
+          userId: friendship.userId,
+          name: friendship.userName,
+        ),
         trailing: PopupMenuButton<String>(
           onSelected: (value) async {
             if (value == 'remove') {
@@ -346,7 +358,10 @@ class _SearchResultCard extends ConsumerWidget {
 
     return AppCard(
       child: ListTile(
-        title: Text(user.name),
+        title: UserProfileLink(
+          userId: user.id,
+          name: user.name,
+        ),
         subtitle: isPending ? const Text('Request pending') : null,
         trailing: canRequest
             ? FilledButton(

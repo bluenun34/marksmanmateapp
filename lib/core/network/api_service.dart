@@ -12,6 +12,7 @@ import '../../shared/models/notification_models.dart';
 import '../../shared/models/shoot_session_model.dart';
 import '../../shared/models/sync_payload.dart';
 import '../../shared/models/user_model.dart';
+import '../../shared/models/public_user_profile_model.dart';
 import '../../shared/models/structured_log_reminder_models.dart';
 import 'api_errors.dart';
 import 'dio_client.dart';
@@ -58,6 +59,13 @@ class ApiService {
   Future<UserModel> getUser() async {
     final resp = await _dio.get('/user');
     return UserModel.fromJson(resp.data as Map<String, dynamic>);
+  }
+
+  Future<PublicUserProfileModel> getUserProfile(int userId) async {
+    final resp = await _dio.get('/users/$userId');
+    return PublicUserProfileModel.fromJson(
+      Map<String, dynamic>.from(resp.data as Map),
+    );
   }
 
   Future<SyncPayload> getSync({int shootLogsLimit = 50}) async {
