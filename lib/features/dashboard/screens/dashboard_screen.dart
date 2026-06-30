@@ -22,9 +22,9 @@ import '../../../features/settings/providers/notification_preferences_provider.d
 import '../../../core/notifications/notification_preference_catalog.dart';
 import '../../../features/onboarding/onboarding_dialog.dart';
 import '../../../features/shoot_log/providers/shoot_log_provider.dart';
-import '../../../features/shoot_log/widgets/structured_log_reminders_section.dart';
 import '../../../shared/models/event_models.dart';
 import '../../../shared/shoot_log/shoot_log_labels.dart';
+import '../../../shared/widgets/app_bar_profile_button.dart';
 import '../../../shared/widgets/app_screen_app_bar.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/error_retry_view.dart';
@@ -117,21 +117,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               child: const Icon(Icons.notifications_outlined),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: CircleAvatar(
-              radius: 16,
-              backgroundColor: theme.colorScheme.primaryContainer,
-              child: Text(
-                auth.user?.name.substring(0, 1).toUpperCase() ?? '?',
-                style: TextStyle(
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
-                ),
-              ),
-            ),
-          ),
+          const AppBarProfileButton(),
         ],
       ),
       body: sessionsAsync.when(
@@ -263,11 +249,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         error: (_, __) => const SizedBox.shrink(),
                         data: (groups) => MyGroupsDashboardSection(groups: groups),
                       ),
-                      const StructuredLogRemindersSection(
-                        compact: true,
-                        maxItems: 2,
-                      ),
-                      const SizedBox(height: 12),
                       OutlinedButton.icon(
                         onPressed: () => context.push('/shoot-log/analytics'),
                         icon: const Icon(Icons.insights_outlined),

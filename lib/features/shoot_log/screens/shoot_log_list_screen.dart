@@ -11,7 +11,7 @@ import '../../../shared/widgets/error_retry_view.dart';
 import '../data/session_draft_repository.dart';
 import '../providers/shoot_log_provider.dart';
 import '../widgets/shoot_log_filter.dart';
-import '../widgets/structured_log_reminders_section.dart';
+import '../widgets/personal_shoot_logs_entry.dart';
 
 class ShootLogListScreen extends ConsumerStatefulWidget {
   const ShootLogListScreen({super.key});
@@ -71,6 +71,7 @@ class _ShootLogListScreenState extends ConsumerState<ShootLogListScreen> {
         context,
         title: 'Shoot Log',
         actions: [
+          const PersonalShootLogsEntry(),
           IconButton(
             icon: const Icon(Icons.sync_rounded),
             tooltip: 'Sync shoot log',
@@ -136,12 +137,6 @@ class _ShootLogListScreenState extends ConsumerState<ShootLogListScreen> {
                 ],
               ),
             ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-            sliver: const SliverToBoxAdapter(
-              child: StructuredLogRemindersSection(),
-            ),
-          ),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
             sliver: SliverToBoxAdapter(

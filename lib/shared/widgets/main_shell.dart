@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/providers/auth_provider.dart';
+import '../../features/events/providers/events_provider.dart';
 import '../../features/notifications/providers/notifications_provider.dart';
 import '../../../shared/models/notification_models.dart';
 import 'app_screen_app_bar.dart';
@@ -205,6 +206,10 @@ class _MainShellState extends ConsumerState<MainShell> {
                   selected: widget.location.startsWith('/events'),
                   onTap: () => _go('/events'),
                 ),
+                _PersonalShootLogsDrawerTile(
+                  selected: widget.location == '/shoot-log/personal',
+                  onTap: () => _go('/shoot-log/personal'),
+                ),
               ],
             ),
           ),
@@ -240,6 +245,35 @@ class _MainShellState extends ConsumerState<MainShell> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _PersonalShootLogsDrawerTile extends ConsumerWidget {
+  const _PersonalShootLogsDrawerTile({
+    required this.selected,
+    required this.onTap,
+  });
+
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(structuredLogRemindersProvider).maybeWhen(
+          data: (reminders) => reminders.length,
+          orElse: () => 0,
+        );
+
+    return ListTile(
+      leading: Badge(
+        isLabelVisible: count > 0,
+        label: Text('$count'),
+        child: const Icon(Icons.assignment_outlined),
+      ),
+      title: const Text('Personal shoot logs'),
+      selected: selected,
+      onTap: onTap,
     );
   }
 }

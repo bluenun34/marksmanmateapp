@@ -8,16 +8,9 @@ import '../../../shared/models/structured_log_reminder_models.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../events/providers/events_provider.dart';
 
-/// Website-aligned reminder cards for unlinked structured club shoots.
+/// Reminder cards for unlinked structured club shoots on the personal logs page.
 class StructuredLogRemindersSection extends ConsumerWidget {
-  const StructuredLogRemindersSection({
-    super.key,
-    this.compact = false,
-    this.maxItems,
-  });
-
-  final bool compact;
-  final int? maxItems;
+  const StructuredLogRemindersSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,10 +23,6 @@ class StructuredLogRemindersSection extends ConsumerWidget {
       data: (reminders) {
         if (reminders.isEmpty) return const SizedBox.shrink();
 
-        final visible = maxItems != null
-            ? reminders.take(maxItems!).toList()
-            : reminders;
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -41,64 +30,51 @@ class StructuredLogRemindersSection extends ConsumerWidget {
               children: [
                 Expanded(
                   child: Text(
-                    compact
-                        ? 'Unlinked structured shoots'
-                        : 'Personal shoot logs needed',
+                    'Personal shoot logs needed',
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-                if (!compact)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primaryContainer
-                          .withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(999),
-                      border: Border.all(
-                        color: theme.colorScheme.primary.withValues(alpha: 0.25),
-                      ),
-                    ),
-                    child: Text(
-                      '${reminders.length} pending',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primaryContainer
+                        .withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(
+                      color: theme.colorScheme.primary.withValues(alpha: 0.25),
                     ),
                   ),
+                  child: Text(
+                    '${reminders.length} pending',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
               ],
             ),
-            if (!compact) ...[
-              const SizedBox(height: 4),
-              Text(
-                'You took part in structured club shoots but have not linked a '
-                'personal shoot log yet. Record rounds fired, firearms, and ammo '
-                'for your records.',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
+            const SizedBox(height: 4),
+            Text(
+              'You took part in structured club shoots but have not linked a '
+              'personal shoot log yet. Record rounds fired, firearms, and ammo '
+              'for your records.',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
               ),
-            ],
+            ),
             const SizedBox(height: 12),
-            ...visible.map(
+            ...reminders.map(
               (reminder) => Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: _ReminderCard(reminder: reminder),
               ),
             ),
-            if (maxItems != null && reminders.length > maxItems!)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton(
-                  onPressed: () => context.push('/shoot-log'),
-                  child: Text('View all ${reminders.length} reminders'),
-                ),
-              ),
           ],
         );
       },

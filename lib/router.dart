@@ -31,6 +31,8 @@ import 'features/events/screens/shoot_live_screen.dart';
 import 'features/notifications/screens/conversation_screen.dart';
 import 'features/notifications/screens/messages_list_screen.dart';
 import 'features/notifications/screens/notifications_screen.dart';
+import 'features/profile/screens/profile_screen.dart';
+import 'features/shoot_log/screens/personal_shoot_logs_screen.dart';
 import 'features/shoot_log/screens/shoot_log_analytics_screen.dart';
 import 'features/tools/screens/ballistics_calculator_screen.dart';
 import 'features/tools/screens/rifle_level_screen.dart';
@@ -85,6 +87,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/shoot-log/analytics',
         builder: (_, _) => const ShootLogAnalyticsScreen(),
+      ),
+      GoRoute(
+        path: '/shoot-log/personal',
+        builder: (_, _) => const PersonalShootLogsScreen(),
       ),
       GoRoute(
         path: '/shoot-log/:id([0-9]+)/edit',
@@ -178,6 +184,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, state) => ShootLiveScreen(
           shootId: int.parse(state.pathParameters['id']!),
         ),
+      ),
+      GoRoute(
+        path: '/profile',
+        builder: (_, _) => const ProfileScreen(),
       ),
       GoRoute(
         path: '/notifications',

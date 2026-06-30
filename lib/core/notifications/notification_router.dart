@@ -9,10 +9,11 @@ String routeForNotification(AppNotification notification) {
       }
       return '/messages';
     case 'event_rsvp_reminder':
-    case 'structured_shoot_log_reminder':
       final eventId = notification.eventId;
       if (eventId != null) return '/events/$eventId';
       return '/events';
+    case 'structured_shoot_log_reminder':
+      return '/shoot-log/personal';
     case 'group_invite':
       return '/groups';
     case 'event_tomorrow_digest':
